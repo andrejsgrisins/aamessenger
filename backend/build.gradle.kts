@@ -45,7 +45,8 @@ dependencies {
     implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
     implementation("commons-validator:commons-validator:1.7")
     implementation("org.mindrot:jbcrypt:0.4")
-    implementation("io.lettuce:lettuce-core:6.8.1.RELEASE"
+    implementation("io.lettuce:lettuce-core:6.8.1.RELEASE")
+    implementation("org.springframework:spring-context:7.0.0-M9")
 }
 
 application {
