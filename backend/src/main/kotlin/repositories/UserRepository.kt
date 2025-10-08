@@ -1,4 +1,8 @@
 // Copyright (c) 2023 Andrejs Grišins, Anastasia Petrova. Unauthorized use prohibited.
+package repositories
+
+import config.AuthConfig
+import models.User
 import org.postgresql.ds.PGSimpleDataSource
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction

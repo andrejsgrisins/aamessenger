@@ -1,4 +1,5 @@
 // Copyright (c) 2023 Andrejs Grišins, Anastasia Petrova. Unauthorized use prohibited.
+package config
 
 data class AuthConfig(
     val dbUrl: String,

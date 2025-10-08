@@ -1,4 +1,6 @@
 // Copyright (c) 2023 Andrejs Grišins, Anastasia Petrova. Unauthorized use prohibited.
+package services
+
 import org.apache.commons.validator.routines.EmailValidator
 import java.security.MessageDigest
 import org.jetbrains.exposed.sql.*
@@ -6,14 +8,38 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import java.security.SecureRandom
 import java.util.*
 import org.mindrot.jbcrypt.BCrypt
+import config.AuthConfig
+import repositories.UserRepository
+import services.TokenService
+import util.JwtUtil
+import models.User
 
 class AuthService(
     private val userRepository: UserRepository,
-    private val config: AuthConfig
+    private val config: AuthConfig,
+    private val tokenService: TokenService,
+    private val jwtUtil: JwtUtil
 ) {
-    fun login(usernameOrEmail: String, password: String): Boolean {
-        val user = userRepository.findByUsernameOrEmail(usernameOrEmail) ?: return false
-        return verifyPassword(user.passwordHash!!, password)
+    fun login(usernameOrEmail: String, password: String): String {
+        val user = userRepository.findByUsernameOrEmail(usernameOrEmail)
+         ?: return ""
+        if (!verifyPassword(user.passwordHash!!, password)) {
+            return ""
+        }
+
+        return tokenService.generateToken(user.username)
+    }
+
+    fun logout(token: String) {
+        tokenService.revokeToken(token)
+    }
+
+    fun validateToken(token: String) {
+        if(tokenService.isTokenRevoked(token)) {
+            throw IllegalArgumentException("Token is revoked")
+        }
+
+        jwtUtil.validateToken(token)
     }
 
     fun registerUser(username: String, email: String, password: String): Boolean {

@@ -1,4 +1,8 @@
 // Copyright (c) 2023 Andrejs Grišins, Anastasia Petrova. Unauthorized use prohibited.
+package controllers
+
+import services.AuthService
+import models.TokenResponse
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.post
 import io.ktor.http.HttpStatusCode
@@ -26,9 +30,10 @@ fun Route.authRouting(authService: AuthService) {
         val usernameOrEmail = params["username_or_email"]!!
         val password = params["password"]!!
 
-        if (authService.login(usernameOrEmail, password)) {
-            call.respond(HttpStatusCode.OK, "Login successful")
-        } else {
+        try {
+            val token = authService.login(usernameOrEmail, password)
+            call.respond(HttpStatusCode.OK, TokenResponse(token))
+        } catch (e: Exception) {
             call.respond(HttpStatusCode.Unauthorized, "Invalid credentials")
         }
     }
@@ -47,5 +52,11 @@ fun Route.authRouting(authService: AuthService) {
         } catch (e: Exception) {
             call.respond(HttpStatusCode.BadRequest, e.message ?: "Guest registration failed")
         }
+    }
+
+    post("/logout") {
+        val token = call.request.headers["Authorization"]?.replace("Bearer ", "") ?: ""
+        authService.logout(token)
+        call.respond(HttpStatusCode.OK, "Logged out")
     }
 }

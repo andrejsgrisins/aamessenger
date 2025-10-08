@@ -1,22 +1,27 @@
+// Copyright (c) 2023 Andrejs Grišins, Anastasia Petrova. Unauthorized use prohibited.
+package config
+
 import io.lettuce.core.RedisClient
 import io.lettuce.core.api.StatefulRedisConnection
 import io.lettuce.core.api.sync.RedisCommands
-import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Configuration
+import io.lettuce.core.ClientOptions
 
-@Configuration
+
 class RedisConfig {
-    @Bean
     fun redisClient(): RedisClient {
-        return RedisClient.create("redis://localhost:6379:0")
+        val client = RedisClient.create("redis://localhost:6379")
+        client.setOptions(
+            ClientOptions.builder()
+            .autoReconnect(true)
+            .build()
+        )
+        return client
     }
 
-    @Bean
-    fun connection(redisClient: RedisClient): StatefulRedisConnection<String, String> {
+    fun redisConnection(redisClient: RedisClient): StatefulRedisConnection<String, String> {
         return redisClient.connect()
     }
 
-    @Bean
     fun redisCommands(connection: StatefulRedisConnection<String, String>): RedisCommands<String, String> {
         return connection.sync()
     }

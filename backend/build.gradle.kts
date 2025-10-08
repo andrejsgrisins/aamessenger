@@ -38,7 +38,6 @@ dependencies {
     implementation("io.ktor:ktor-server-core:$ktorVersion")
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
     implementation("io.ktor:ktor-server-content-negotiation:$ktorVersion")
-    //implementation("io.ktor:ktor-server-routing:$ktorVersion")
     implementation("io.ktor:ktor-server-resources:$ktorVersion")
     implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
@@ -46,7 +45,10 @@ dependencies {
     implementation("commons-validator:commons-validator:1.7")
     implementation("org.mindrot:jbcrypt:0.4")
     implementation("io.lettuce:lettuce-core:6.8.1.RELEASE")
-    implementation("org.springframework:spring-context:7.0.0-M9")
+    
+    implementation("io.jsonwebtoken:jjwt-api:0.13.0")
+    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.13.0")
+    runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.13.0")
 }
 
 application {
